@@ -7,6 +7,13 @@ export default {
     extend: {
       fontFamily: {
         sans: ["var(--font-sans)", ...fontFamily.sans],
+        serif: [
+          "Charter",
+          "Bitstream Charter",
+          "Sitka Text",
+          "Cambria",
+          "serif",
+        ],
       },
     },
   },
