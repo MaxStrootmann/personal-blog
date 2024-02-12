@@ -11,10 +11,7 @@ export const env = createEnv({
       .string()
       .url()
       .refine(
-        (str) =>
-          !str.includes(
-            "mysql://root:bg4ChC-ef2HHfe4hEHCgfAG65bCChD5H@monorail.proxy.rlwy.net:54682/railway",
-          ),
+        (str) => !str.includes("YOUR_MYSQL_URL_HERE"),
         "You forgot to change the default URL",
       ),
     NODE_ENV: z
