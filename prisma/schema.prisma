@@ -11,10 +11,27 @@ datasource db {
 }
 
 model Post {
-    id        Int      @id @default(autoincrement())
+    id        Int        @id @default(autoincrement())
     name      String
-    createdAt DateTime @default(now())
-    updatedAt DateTime @updatedAt
+    reactions Reaction[] // Reactions directly associated with the post
+    createdAt DateTime   @default(now())
+    updatedAt DateTime   @updatedAt
 
     @@index([name])
+}
+
+model Reaction {
+    id             Int        @id @default(autoincrement())
+    name           String
+    body           Json
+    postId         Int? // Optional: only present if directly reacting to a post
+    reactionId     Int? // Optional: only present if this is a reaction to another reaction
+    post           Post?      @relation(fields: [postId], references: [id])
+    parentReaction Reaction?  @relation("ParentReaction", fields: [reactionId], references: [id])
+    childReactions Reaction[] @relation("ParentReaction")
+    createdAt      DateTime   @default(now())
+    updatedAt      DateTime   @updatedAt
+
+    @@index([postId])
+    @@index([reactionId])
 }
