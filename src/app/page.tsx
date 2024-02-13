@@ -1,6 +1,11 @@
 import Link from "next/link";
+import { use, useEffect } from "react";
+import getPosts from "~/server/get-posts";
+import posts from "~/server/get-posts";
 
-export default function HomePage() {
+export default async function HomePage() {
+  const posts = await getPosts();
+  console.log("logging posts", posts);
   return (
     <main className="flex min-h-screen flex-col items-center justify-center bg-gradient-to-b from-[#2e026d] to-[#15162c] text-white">
       <div className="container flex flex-col items-center justify-center gap-12 px-4 py-16 ">
