@@ -1,42 +1,72 @@
+import Image from "next/image";
 import Link from "next/link";
-import { use, useEffect } from "react";
-import getPosts from "~/server/get-posts";
-import posts from "~/server/get-posts";
+import { allPosts } from "contentlayer/generated";
+import { compareDesc } from "date-fns";
 
-export default async function HomePage() {
-  const posts = await getPosts();
-  console.log("logging posts", posts);
+import { formatDate } from "@/lib/utils";
+import getPosts from "~/server/get-posts";
+
+export const metadata = {
+  title: "Blog",
+};
+
+export default async function BlogPage() {
+  const myposts = await getPosts();
+  const posts = allPosts
+    .filter((post) => post.published)
+    .sort((a, b) => {
+      return compareDesc(new Date(a.date), new Date(b.date));
+    });
+
   return (
-    <main className="flex min-h-screen flex-col items-center justify-center bg-gradient-to-b from-[#2e026d] to-[#15162c] text-white">
-      <div className="container flex flex-col items-center justify-center gap-12 px-4 py-16 ">
-        <h1 className="text-5xl font-extrabold tracking-tight text-white sm:text-[5rem]">
-          Create <span className="text-[hsl(280,100%,70%)]">T3</span> App
-        </h1>
-        <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 md:gap-8">
-          <Link
-            className="flex max-w-xs flex-col gap-4 rounded-xl bg-white/10 p-4 text-white hover:bg-white/20"
-            href="https://create.t3.gg/en/usage/first-steps"
-            target="_blank"
-          >
-            <h3 className="text-2xl font-bold">First Steps →</h3>
-            <p className="text-lg">
-              Just the basics - Everything you need to know to set up your
-              database and authentication.
-            </p>
-          </Link>
-          <Link
-            className="flex max-w-xs flex-col gap-4 rounded-xl bg-white/10 p-4 text-white hover:bg-white/20"
-            href="https://create.t3.gg/en/introduction"
-            target="_blank"
-          >
-            <h3 className="text-2xl font-bold">Documentation →</h3>
-            <div className="text-lg">
-              Learn more about Create T3 App, the libraries it uses, and how to
-              deploy it.
-            </div>
-          </Link>
+    <div className="container max-w-4xl py-6 lg:py-10">
+      <div className="flex flex-col items-start gap-4 md:flex-row md:justify-between md:gap-8">
+        <div className="flex-1 space-y-4">
+          <h1 className="font-heading inline-block text-4xl tracking-tight lg:text-5xl">
+            Blog
+          </h1>
+          <p className="text-muted-foreground text-xl">
+            A blog built using Contentlayer. Posts are written in MDX.
+            {/* Images are from artists and authors i would like to promote. Links are at the start of the post. */}
+          </p>
         </div>
       </div>
-    </main>
+      <hr className="my-8" />
+      {posts?.length ? (
+        <div className="grid gap-10 sm:grid-cols-2">
+          {posts.map((post, index) => (
+            <article
+              key={post._id}
+              className="group relative flex flex-col space-y-2"
+            >
+              {post.image && (
+                <Image
+                  src={post.image}
+                  alt={post.title}
+                  width={804}
+                  height={452}
+                  className="bg-muted rounded-md border transition-colors"
+                  priority={index <= 1}
+                />
+              )}
+              <h2 className="text-2xl font-extrabold">{post.title}</h2>
+              {post.description && (
+                <p className="text-muted-foreground">{post.description}</p>
+              )}
+              {post.date && (
+                <p className="text-muted-foreground text-sm">
+                  {formatDate(post.date)}
+                </p>
+              )}
+              <Link href={post.slug} className="absolute inset-0">
+                <span className="sr-only">View Article</span>
+              </Link>
+            </article>
+          ))}
+        </div>
+      ) : (
+        <p>No posts published.</p>
+      )}
+    </div>
   );
 }

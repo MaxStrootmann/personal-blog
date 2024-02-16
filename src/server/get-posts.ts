@@ -1,3 +1,4 @@
+import { env } from "~/env";
 import { drive } from "~/utils/google-api";
 
 interface Post {
@@ -7,7 +8,7 @@ interface Post {
 }
 
 const getPosts = async (): Promise<Post[]> => {
-  const folderId = "1qN0c8vEs3pvDG4MeFQ6IKjrn9xbuCYOK";
+  const folderId = env.GOOGLE_DRIVE_FOLDER_ID;
   const listOfFiles = await drive.files.list({
     q: `'${folderId}' in parents and mimeType='text/markdown'`,
     fields: "files(id, name, createdTime)",
