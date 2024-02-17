@@ -16,6 +16,7 @@
     "@google-cloud/local-auth": "2.1.0",
     "@prisma/client": "^5.6.0",
     "@t3-oss/env-nextjs": "^0.7.1",
+    "cloudinary": "^2.0.1",
     "fs": "0.0.1-security",
     "googleapis": "^105.0.0",
     "next": "^14.0.4",

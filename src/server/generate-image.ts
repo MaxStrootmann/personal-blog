@@ -11,5 +11,5 @@ export default async function generateImage({ prompt }: { prompt: string }) {
     prompt: prompt,
   });
 
-  console.log(image.data);
+  return image.data;
 }
