@@ -17,41 +17,27 @@ const getPosts = async (): Promise<Post[]> => {
   });
   const files = listOfFiles.data.files;
 
-  const response = files.forEach(async (file: any) => {
-    const postContent = await drive.files.get({
-      fileId: file.id,
-      alt: "media",
-      fields: "data",
-    });
+  const response = await Promise.all(
+    files.map(async (file: any) => {
+      const postContent = await drive.files.get({
+        fileId: file.id,
+        alt: "media",
+        fields: "data",
+      });
 
-    const posts = await db.post.create({
-      data: {
-        googleId: file.id,
-        name: file.name,
-        createdAt: file.createdTime,
-        content: postContent.data,
-      },
-    });
-    console.log("LOGGING POSTS: ", posts);
-    return posts;
-  });
+      const posts = await db.post.create({
+        data: {
+          googleId: file.id,
+          name: file.name,
+          createdAt: file.createdTime,
+          content: postContent.data,
+        },
+      });
+      console.log("LOGGING POSTS: ", posts);
+      return posts;
+    }),
+  );
 
-  // const fileIds = listOfFiles.data.files.map((file: any) => file.id);
-
-  // const responseOld = await Promise.all(
-  //   fileIds.map(async (fileId: string) => {
-  //     const file = await drive.files.get({
-  //       fileId,
-  //       alt: "media",
-  //     });
-
-  //     return {
-  //       name: listOfFiles.data.files.name,
-  //       createdDate: listOfFiles.data.files.createdTime,
-  //       content: file.data,
-  //     };
-  //   }),
-  // );
   console.log("LOGGING RESPONSE: ", response);
 
   return response;
