@@ -11,11 +11,13 @@ datasource db {
 }
 
 model Post {
-    id        Int        @id @default(autoincrement())
-    name      String
-    reactions Reaction[] // Reactions directly associated with the post
-    createdAt DateTime   @default(now())
-    updatedAt DateTime   @updatedAt
+    id         Int        @id @default(autoincrement())
+    name       String
+    content    String
+    coverImage String?
+    reactions  Reaction[] // Reactions directly associated with the post
+    createdAt  DateTime   @default(now())
+    updatedAt  DateTime   @updatedAt
 
     @@index([name])
 }
