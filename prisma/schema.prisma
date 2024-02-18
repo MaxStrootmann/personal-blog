@@ -12,8 +12,9 @@ datasource db {
 
 model Post {
     id         Int        @id @default(autoincrement())
+    googleId   String
     name       String
-    content    String
+    content    String     @db.Text
     coverImage String?
     reactions  Reaction[] // Reactions directly associated with the post
     createdAt  DateTime   @default(now())
