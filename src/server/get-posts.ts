@@ -1,31 +1,49 @@
 import { env } from "~/env";
 import { drive } from "~/server/google-api";
-import { db } from "./db";
+import { db } from "./db"; // Add missing import statement for db module
 
-interface Post {
+type Post = {
   googleId: string;
   name: string;
   createdDate: string;
   content: string;
-}
+};
 
-const getPosts = async (): Promise<Post[]> => {
+// Function to retrieve all posts from Google Drive
+export default async function getPosts(): Promise<Post[]> {
   const folderId = env.GOOGLE_DRIVE_FOLDER_ID;
+
+  // Retrieve list of files from the specified folder in Google Drive
   const listOfFiles = await drive.files.list({
     q: `'${folderId}' in parents and mimeType='text/markdown'`,
     fields: "files(id, name, createdTime)",
   });
   const files = listOfFiles.data.files;
 
+  // Process each file asynchronously
   const response = await Promise.all(
     files.map(async (file: any) => {
+      // Retrieve the content of the file from Google Drive
       const postContent = await drive.files.get({
         fileId: file.id,
         alt: "media",
         fields: "data",
       });
 
-      const posts = await db.post.create({
+      // Check if the post already exists in the database
+      const existingPost = await db.post.findUnique({
+        where: {
+          googleId: file.id,
+        },
+      });
+
+      // If the post already exists, return it
+      if (existingPost) {
+        return existingPost;
+      }
+
+      // Create a new post in the database
+      const newPost = await db.post.create({
         data: {
           googleId: file.id,
           name: file.name,
@@ -33,14 +51,10 @@ const getPosts = async (): Promise<Post[]> => {
           content: postContent.data,
         },
       });
-      console.log("LOGGING POSTS: ", posts);
-      return posts;
+
+      return newPost;
     }),
   );
 
-  console.log("LOGGING RESPONSE: ", response);
-
   return response;
-};
-
-export default getPosts;
+}

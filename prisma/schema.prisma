@@ -12,7 +12,7 @@ datasource db {
 
 model Post {
     id         Int        @id @default(autoincrement())
-    googleId   String
+    googleId   String     @unique
     name       String
     content    String     @db.Text
     coverImage String?
