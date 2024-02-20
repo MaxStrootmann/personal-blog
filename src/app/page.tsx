@@ -1,6 +1,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import formatDate from "~/lib/formatDate";
+import parsedContent from "~/lib/parseMarkdown";
 import { db } from "~/server/db";
 import generateImage from "~/server/generate-image";
 import getPosts from "~/server/get-posts";
@@ -41,7 +42,7 @@ export default async function BlogPage() {
         id: post.id,
       },
       data: {
-        coverImage: uploadedImage.url,
+        coverImage: uploadedImage,
       },
     });
 
@@ -57,10 +58,10 @@ export default async function BlogPage() {
   });
 
   return (
-    <div className="container max-w-4xl py-6 lg:py-10">
+    <div className="container max-w-4xl px-4 py-6 lg:py-10">
       <div className="flex flex-col items-start gap-4 md:flex-row md:justify-between md:gap-8">
         <div className="flex-1 space-y-4">
-          <h1 className="font-heading inline-block text-4xl tracking-tight lg:text-5xl">
+          <h1 className="inline-block text-4xl font-bold tracking-tight lg:text-5xl">
             Blog
           </h1>
           <p className="text-muted-foreground text-xl">
@@ -88,11 +89,7 @@ export default async function BlogPage() {
                 />
               )}
               <h2 className="text-2xl font-extrabold">{post.name}</h2>
-              {post.content && (
-                <p className="text-muted-foreground">
-                  {post.content.slice(0, 100)}
-                </p>
-              )}
+              {post.content && <div className="">{parsedContent(post)}</div>}
               {post.createdAt && (
                 <p className="text-muted-foreground text-sm">
                   {formatDate(post.createdAt)}

@@ -22,7 +22,7 @@ const uploadImage = async ({ imagePath }: { imagePath: string }) => {
     // Upload the image
     const result = await cloudinary.uploader.upload(imagePath, options);
     console.log("CLOUDINARY RESULT: ", result);
-    return result.public_id;
+    return result.url;
   } catch (error) {
     console.error("CLOUDINARY ERROR:", error);
   }
