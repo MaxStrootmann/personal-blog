@@ -6,9 +6,6 @@ cloudinary.config({
   secure: true,
 });
 
-// Log the configuration
-console.log("LOGGING CLOUDINARY CONFIG: ", cloudinary.config());
-
 /////////////////////////
 // Uploads an image file
 /////////////////////////
@@ -24,10 +21,10 @@ const uploadImage = async ({ imagePath }: { imagePath: string }) => {
   try {
     // Upload the image
     const result = await cloudinary.uploader.upload(imagePath, options);
-    console.log(result);
+    console.log("CLOUDINARY RESULT: ", result);
     return result.public_id;
   } catch (error) {
-    console.error(error);
+    console.error("CLOUDINARY ERROR:", error);
   }
 };
 

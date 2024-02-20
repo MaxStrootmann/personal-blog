@@ -23,13 +23,12 @@ export default async function BlogPage() {
     for (const post of postsWithoutImage) {
       // Generate an image based on the first 400 characters of the post content
       // but first filter out anything that might be a content policy violation of openai
-      const filteredContent = post.content.replace(
-        /(http(s?):)([/|.|\w|\s|-])*\.(?:jpg|gif|png)/g,
-        "",
-      );
+      const filteredContent = post.content
+        .slice(0, 400)
+        .replace(/(http(s?):)([/|.|\w|\s|-])*\.(?:jpg|gif|png)/g, "");
 
       const generatedImage = await generateImage({
-        prompt: filteredContent.slice(0, 400) as string,
+        prompt: filteredContent as string,
       });
 
       // Upload the generated image to the server
@@ -48,7 +47,7 @@ export default async function BlogPage() {
       });
 
       // Add a delay of 1 second between each iteration to avoid openai rate limits
-      await new Promise((resolve) => setTimeout(resolve, 1000));
+      await new Promise((resolve) => setTimeout(resolve, 2000));
     }
   });
 
