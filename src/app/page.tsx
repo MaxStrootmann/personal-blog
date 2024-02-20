@@ -11,45 +11,43 @@ export default async function BlogPage() {
   const myPosts = await getPosts();
 
   //Go over all posts, check if they have a cover image, if not, generate one
-  myPosts.forEach(async (post) => {
-    // Get all posts without a cover image
-    const postsWithoutImage = await db.post.findMany({
+  const postsWithoutImage = await db.post.findMany({
+    where: {
+      coverImage: null,
+    },
+  });
+  console.log("POSTS WITHOUT IMAGE: ", postsWithoutImage);
+
+  // Go over all posts without a cover image
+  for (const post of postsWithoutImage) {
+    // Generate an image based on the first 400 characters of the post content
+    // but first filter out anything that might be a content policy violation of openai
+    const filteredContent = post.content
+      .slice(0, 400)
+      .replace(/(http(s?):)([/|.|\w|\s|-])*\.(?:jpg|gif|png)/g, "");
+
+    const generatedImage = await generateImage({
+      prompt: filteredContent as string,
+    });
+    console.log("OPENAI URL: ", generatedImage?.data[0]?.url);
+    // Upload the generated image to the server
+    const uploadedImage = await uploadImage({
+      imagePath: generatedImage?.data[0]?.url as string,
+    });
+
+    // Update the post with the new cover image
+    await db.post.update({
       where: {
-        coverImage: null,
+        id: post.id,
+      },
+      data: {
+        coverImage: uploadedImage.url,
       },
     });
 
-    // Go over all posts without a cover image
-    for (const post of postsWithoutImage) {
-      // Generate an image based on the first 400 characters of the post content
-      // but first filter out anything that might be a content policy violation of openai
-      const filteredContent = post.content
-        .slice(0, 400)
-        .replace(/(http(s?):)([/|.|\w|\s|-])*\.(?:jpg|gif|png)/g, "");
-
-      const generatedImage = await generateImage({
-        prompt: filteredContent as string,
-      });
-
-      // Upload the generated image to the server
-      const uploadedImage = await uploadImage({
-        imagePath: generatedImage?.data[0]?.url as string,
-      });
-
-      // Update the post with the new cover image
-      await db.post.update({
-        where: {
-          id: post.id,
-        },
-        data: {
-          coverImage: uploadedImage.url,
-        },
-      });
-
-      // Add a delay of 1 second between each iteration to avoid openai rate limits
-      await new Promise((resolve) => setTimeout(resolve, 2000));
-    }
-  });
+    // Add a delay of 1 second between each iteration to avoid openai rate limits
+    await new Promise((resolve) => setTimeout(resolve, 2000));
+  }
 
   // put the posts in an array
   const posts = await db.post.findMany({
