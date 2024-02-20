@@ -33,7 +33,7 @@ export default async function BlogPage() {
 
       // Upload the generated image to the server
       const uploadedImage = await uploadImage({
-        imagePath: generatedImage[0]?.url as string,
+        imagePath: generatedImage?.data[0]?.url as string,
       });
 
       // Update the post with the new cover image

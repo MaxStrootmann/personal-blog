@@ -6,10 +6,13 @@ const openai = new OpenAI({
 });
 
 export default async function generateImage({ prompt }: { prompt: string }) {
-  const image = await openai.images.generate({
-    model: "dall-e-3",
-    prompt: prompt,
-  });
-
-  return image.data;
+  try {
+    const image = await openai.images.generate({
+      model: "dall-e-3",
+      prompt: prompt,
+    });
+    return image;
+  } catch (error) {
+    console.error("OPENAI ERROR:", error);
+  }
 }
