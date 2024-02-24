@@ -1,5 +1,6 @@
 import Image from "next/image";
 import Link from "next/link";
+import { format } from "path";
 import formatDate from "~/lib/formatDate";
 import parsedContent from "~/lib/parseMarkdown";
 import { db } from "~/server/db";
@@ -8,8 +9,8 @@ import getPosts from "~/server/get-posts";
 import uploadImage from "~/server/upload-image";
 
 export default async function BlogPage() {
-  // Get all posts and put in an array
-  const myPosts = await getPosts();
+  // Get all posts and put in db
+  await getPosts();
 
   //Go over all posts, check if they have a cover image, if not, generate one
   const postsWithoutImage = await db.post.findMany({
@@ -57,15 +58,20 @@ export default async function BlogPage() {
     },
   });
 
+  function formatName(name: string) {
+    return name.replace(".md", "");
+  }
+
   return (
     <div className="container max-w-4xl px-4 py-6 lg:py-10">
       <div className="flex flex-col items-start gap-4 md:flex-row md:justify-between md:gap-8">
         <div className="flex-1 space-y-4">
           <h1 className="inline-block text-4xl font-bold tracking-tight lg:text-5xl">
-            Blog
+            Blog by Max
           </h1>
           <p className="text-muted-foreground text-xl">
-            A blog built using Contentlayer. Posts are written in MDX.
+            A Next.js blog built using Obsidian.md, Google Drive and DALL-E 3.
+            Read about my projects and thoughts on webdesign & development.
             {/* Images are from artists and authors i would like to promote. Links are at the start of the post. */}
           </p>
         </div>
@@ -81,14 +87,16 @@ export default async function BlogPage() {
               {post.coverImage && (
                 <Image
                   src={post.coverImage}
-                  alt={post.name}
+                  alt={formatName(post.name)}
                   width={804}
                   height={452}
                   className="bg-muted rounded-md border transition-colors"
                   priority={index <= 1}
                 />
               )}
-              <h2 className="text-2xl font-extrabold">{post.name}</h2>
+              <h2 className="text-2xl font-extrabold">
+                {formatName(post.name)}
+              </h2>
               {post.content && <div className="">{parsedContent(post)}</div>}
               {post.createdAt && (
                 <p className="text-muted-foreground text-sm">
@@ -96,7 +104,13 @@ export default async function BlogPage() {
                 </p>
               )}
               {/* need to add post.slug here for the href and figure out the dynamic routing thing */}
-              <Link href="#" className="absolute inset-0">
+              <Link
+                href={
+                  "/blog/" +
+                  formatName(post.name).toLowerCase().replace(/ /g, "-")
+                }
+                className="absolute inset-0"
+              >
                 <span className="sr-only">View Article</span>
               </Link>
             </article>

@@ -5,3 +5,10 @@
 p {
   @apply font-serif;
 }
+
+h1,
+h2,
+h3,
+h4 {
+  @apply text-slate-200;
+}

@@ -29,7 +29,6 @@ export default async function getPosts(): Promise<Post[]> {
         alt: "media",
         fields: "data",
       });
-
       // Check if the post already exists in the database
       const existingPost = await db.post.findUnique({
         where: {

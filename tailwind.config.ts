@@ -5,6 +5,10 @@ export default {
   content: ["./src/**/*.tsx"],
   theme: {
     extend: {
+      container: {
+        center: true,
+        padding: "2rem",
+      },
       fontFamily: {
         sans: ["var(--font-sans)", ...fontFamily.sans],
         serif: [
