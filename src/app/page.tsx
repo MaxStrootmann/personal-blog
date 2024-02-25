@@ -57,6 +57,7 @@ export default async function BlogPage() {
       createdAt: "desc",
     },
   });
+  console.log("POSTS: ", posts);
 
   function formatName(name: string) {
     return name.replace(".md", "");
