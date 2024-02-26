@@ -20,6 +20,8 @@ export const env = createEnv({
     GOOGLE_DRIVE_FOLDER_ID: z.string(),
     OPENAI_API_KEY: z.string(),
     CLOUDINARY_URL: z.string(),
+    INSTAGRAM_USERNAME: z.string(),
+    INSTAGRAM_PASSWORD: z.string(),
   },
 
   /**
@@ -41,6 +43,8 @@ export const env = createEnv({
     GOOGLE_DRIVE_FOLDER_ID: process.env.GOOGLE_DRIVE_FOLDER_ID,
     OPENAI_API_KEY: process.env.OPENAI_API_KEY,
     CLOUDINARY_URL: process.env.CLOUDINARY_URL,
+    INSTAGRAM_USERNAME: process.env.INSTAGRAM_USERNAME,
+    INSTAGRAM_PASSWORD: process.env.INSTAGRAM_PASSWORD,
     // NEXT_PUBLIC_CLIENTVAR: process.env.NEXT_PUBLIC_CLIENTVAR,
   },
   /**

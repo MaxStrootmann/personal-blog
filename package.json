@@ -19,6 +19,7 @@
     "cloudinary": "^2.0.1",
     "fs": "0.0.1-security",
     "googleapis": "^105.0.0",
+    "instagram-private-api": "^1.45.3",
     "markdown": "^0.5.0",
     "next": "^14.0.4",
     "openai": "^4.0.0",

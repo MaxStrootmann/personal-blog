@@ -8,7 +8,7 @@ await import("./src/env.js");
 
 const config = {
   images: {
-    domains: ["res.cloudinary.com"],
+    domains: ["res.cloudinary.com", "scontent-ams2-1.cdninstagram.com"],
   },
 };
 
